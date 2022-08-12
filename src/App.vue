@@ -3,11 +3,13 @@ export default{
     data(){
         return {
             btnMessage: 'Traduire le texte',
-            translateFrom: '',
-            translateTo: '',
+            translateFrom: 'en-GB',
+            translateTo: 'fr-FR',
             translateText: '',
             selected: '',
             Logique:"",
+            textFrom:'',
+            textTo:'',
             languages: {
                 "am-ET": "Amharic",
                 "ar-SA": "Arabic",
@@ -111,28 +113,31 @@ export default{
     },
     methods: {
         translateTextFunc(){
-            console.log(this.languages);
+            // console.log(this.languages);
+            let textTrime = this.textFrom.trim();
+            console.log(textTrime);
+            
             // this.selected = id == 0 ? country_code == "en-GB" ? "selected" : "" : country_code == "fr-FR" ? "selected" : "";
-            // let api = `https://api.mymemory.translated.net/get?q=${text}&langpair=${translateFrom}|${translateTo}`;
+            let apiUrl = `https://api.mymemory.translated.net/get?q=${textTrime}&langpair=${this.translateFrom}|${this.translateTo}`;
+            fetch(apiUrl).then(res => res.json()).then(data => {
+                console.log(data);
+                toText.value = data.responseData.translatedText;
+                data.matches.forEach(data => {
+                    if(data.id === 0) {
+                        // toText.value = data.translation;
+                        console.log(data.translation);
+                    }
+                })
+                // toText.setAttribute("placeholder", "Translation");
+            }).catch(error => {
+                    console.log("Hey quelques choses s'est très mal passée !" + error);
+            }) ;
         },
         translateSound(){
             console.log("translateSound");
         },
         translateFromFunc(){
-            // this.translateFromLoading = true;
-            // this.translateToLoading = true;
-            // this.translateFromOptions = [];
-            // this.translateToOptions = [];
-            // let api = `https://api.mymemory.translated.net/getLangs?q=${this.translateFrom}`;
-            // axios.get(api).then(response => {
-            //     this.translateFromLoading = false;
-            //     this.translateToLoading = false;
-            //     this.translateFromOptions = response.data.langs;
-            // }).catch(error => {
-            //     this.translateFromLoading = false;
-            //     this.translateToLoading = false;
-            //     this.translateError = error;
-            // });
+            
         },
         copyText: function(){
             console.log('Hey we are copying');
@@ -162,14 +167,14 @@ export default{
             <div class="text-input">
                 <textarea 
                     spellcheck="false" 
-                    v-model="translateFrom" 
+                    v-model="textFrom" 
                     class="from-text" 
                     placeholder="Entrer le texte"
                 >
                 </textarea>
                 <textarea 
                     spellcheck="false" 
-                    v-model="translateFrom" 
+                    v-model="textTo" 
                     readonly 
                     disabled 
                     class="to-text" 
@@ -194,10 +199,12 @@ export default{
                     >
                     </i>
                     </div>
-                    <select >
+                    <select v-model="translateFrom" >
                         <option  
                             v-for="(index, lang) in languages" 
                             :key="index"
+                            :value="lang"
+                            :selected="lang == 'en-GB' ? true : false" 
                         >
                             {{ languages[lang] }}
                         </option>
@@ -205,11 +212,12 @@ export default{
                 </li>
                 <li @click="exchangeFunc" class="exchange"><i class="fas fa-exchange-alt"></i></li>
                 <li class="row to">
-                    <select>
+                    <select v-model="translateTo" >
                         <option  
                             v-for="(index, lang) in languages"
                             :key="index"
-                            
+                            :value="lang"
+                            :selected="lang == 'fr-FR' ? true : false" 
                         >
                             {{ languages[lang] }}
                         </option>
@@ -224,8 +232,7 @@ export default{
                     <i 
                         @click="copyText()"
                         id="to" 
-                        class="fas 
-                        fa-copy"
+                        class="fas fa-copy"
                     >
                     </i>
                     </div>
