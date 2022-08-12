@@ -31,7 +31,12 @@ fromText.addEventListener("keyup", () => {
 translateBtn.addEventListener("click", () => {
     let text = fromText.value.trim(),
     translateFrom = selectTag[0].value,
+    
     translateTo = selectTag[1].value;
+
+    console.log(translateFrom);
+    console.log(translateTo);
+    
     if(!text) return;
     toText.setAttribute("placeholder", "Translating...");
     let apiUrl = `https://api.mymemory.translated.net/get?q=${text}&langpair=${translateFrom}|${translateTo}`;

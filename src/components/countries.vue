@@ -1,6 +1,6 @@
 <script>
 export default {
-    data() {
+    data: function() {
         return {
             languages: {
                 "am-ET": "Amharic",
