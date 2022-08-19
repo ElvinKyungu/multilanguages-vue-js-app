@@ -34,10 +34,11 @@ body{
   border-radius: 0px;
   border-left: 1px solid #ccc;
 }
-.text-input textarea{
+
+.text-input textarea, .text-input div{
   height: 250px;
-  width: 100%;
-  border: none;
+  width: 50%;
+  /* border: 1px solid grey; */
   outline: none;
   resize: none;
   background: none;

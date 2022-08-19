@@ -5,9 +5,7 @@ export default{
             btnMessage: 'Traduire le texte',
             translateFrom: 'en-GB',
             translateTo: 'fr-FR',
-            translateText: '',
-            selected: '',
-            Logique:"",
+            // translateTextFrom: '',
             textFrom:'',
             textTo:'',
             languages: {
@@ -120,17 +118,26 @@ export default{
             // this.selected = id == 0 ? country_code == "en-GB" ? "selected" : "" : country_code == "fr-FR" ? "selected" : "";
             let apiUrl = `https://api.mymemory.translated.net/get?q=${textTrime}&langpair=${this.translateFrom}|${this.translateTo}`;
             fetch(apiUrl).then(res => res.json()).then(data => {
-                console.log(data);
-                toText.value = data.responseData.translatedText;
+                // console.log(data);
+                if(data.responseStatus == 429){
+                    this.textTo = "Sorry, we couldn't translate this text";
+                    
+                }else{
+                    this.textTo = data.responseData.translatedText;
+                }
                 data.matches.forEach(data => {
                     if(data.id === 0) {
+                        this.textTo = data.translation;
+
+                        console.log(this.textTo);
                         // toText.value = data.translation;
-                        console.log(data.translation);
+                        // console.log(data.translation);
+
                     }
                 })
                 // toText.setAttribute("placeholder", "Translation");
             }).catch(error => {
-                    console.log("Hey quelques choses s'est très mal passée !" + error);
+                    // console.log("Hey quelques choses s'est très mal passée !" + error);
             }) ;
         },
         translateSound(){
@@ -169,18 +176,14 @@ export default{
                     spellcheck="false" 
                     v-model="textFrom" 
                     class="from-text" 
-                    placeholder="Entrer le texte"
+                    placeholder="Text enter"
                 >
                 </textarea>
-                <textarea 
-                    spellcheck="false" 
-                    v-model="textTo" 
-                    readonly 
-                    disabled 
-                    class="to-text" 
-                    placeholder="Translation"
-                >
-                </textarea>
+                <div 
+                    class="textTo"
+                    style="width:100%"> 
+                    {{ textTo }}
+                </div>
             </div>
             <ul class="controls">
                 <li class="row from">
@@ -244,5 +247,10 @@ export default{
 </template>
 
 <style scoped>
+    .textTo{
+        width: 100%;
+        padding: 1rem;
+        border-left: 1px solid #ccc;
+    }
     @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css");
 </style>
